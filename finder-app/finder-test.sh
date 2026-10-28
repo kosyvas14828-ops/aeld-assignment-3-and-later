@@ -52,10 +52,10 @@ echo "Removing the old writer utility and compiling as a native application"
 # make clean
 # make CROSS_COMPILE=
 
-# for i in $( seq 1 $NUMFILES)
-# do
-# 	./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
-# done
+ for i in $( seq 1 $NUMFILES)
+ do
+	./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+ done
 
 OUTPUTSTRING=$(./finder.sh "$WRITEDIR" "$WRITESTR")
 
