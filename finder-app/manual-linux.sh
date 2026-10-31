@@ -9,6 +9,7 @@ OUTDIR=${1:-/tmp/aeld}
 OUTDIR=$(realpath -m "${OUTDIR}")
 KERNEL_REPO=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
 KERNEL_VERSION=v5.15.163
+BUSYBOX_REPO=https://github.com/mirror/busybox.git
 BUSYBOX_VERSION=1_33_stable
 FINDER_APP_DIR=$(realpath "$(dirname "$0")")
 SRC_ROOT=$(realpath "${FINDER_APP_DIR}/..")
@@ -58,14 +59,15 @@ mkdir -p "${OUTDIR}/rootfs/home/conf"
 cd "${OUTDIR}"
 if [ ! -d "${OUTDIR}/busybox" ]
 then
-    git clone git@github.com:mirror/busybox.git "${OUTDIR}/busybox"
+    git clone --depth 1 --branch "${BUSYBOX_VERSION}" "${BUSYBOX_REPO}" "${OUTDIR}/busybox"
     cd "${OUTDIR}/busybox"
-    git checkout "${BUSYBOX_VERSION}"
-    make distclean
-    make ARCH="${ARCH}" CROSS_COMPILE="${CROSS_COMPILE}" defconfig
 else
     cd "${OUTDIR}/busybox"
 fi
+
+git checkout "${BUSYBOX_VERSION}"
+make distclean
+make ARCH="${ARCH}" CROSS_COMPILE="${CROSS_COMPILE}" defconfig
 
 make -j"$(nproc)" ARCH="${ARCH}" CROSS_COMPILE="${CROSS_COMPILE}"
 make CONFIG_PREFIX="${OUTDIR}/rootfs" ARCH="${ARCH}" CROSS_COMPILE="${CROSS_COMPILE}" install
